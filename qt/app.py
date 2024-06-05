@@ -118,6 +118,7 @@ class MainWindow(QMainWindow):
         # "Magic" object handling shutdown procedure in different desktop
         # environments.
         self.shutdown = tools.ShutDown()
+        self.sleepmode = tools.SleepMode()
 
         # Import on module level not possible because of Qt restrictions.
         import icon
@@ -373,10 +374,9 @@ class MainWindow(QMainWindow):
             self.config.setCurrentHashId(hash_id)
 
         if not config.canBackup(profile_id):
-            msg = _("Can't find snapshots folder.") + '\n' \
-                + _('If it is on a removable drive please plug it in and then '
-                    'press OK.')
-            messagebox.critical(self, msg)
+            messagebox.critical(self, _(
+                "Can't find snapshots folder.\nIf it is on a removable "
+                "drive please plug it in and then press OK."))
 
         self.filesViewProxyModel.layoutChanged.connect(self.dirListerCompleted)
 
@@ -513,6 +513,10 @@ class MainWindow(QMainWindow):
                 icon.SHUTDOWN, _('Shutdown'),
                 None, None,
                 _('Shut down system after snapshot has finished.')),
+            'act_sleepmode': (
+                icon.SHUTDOWN, _('Sleepmode'),
+                None, None,
+                _('Sleep mode system after snapshot has been put to sleep.')),
             'act_setup_language': (
                 None, _('Setup language…'),
                 self.slot_setup_language, None,
@@ -606,6 +610,9 @@ class MainWindow(QMainWindow):
         self.act_shutdown.toggled.connect(self.btnShutdownToggled)
         self.act_shutdown.setCheckable(True)
         self.act_shutdown.setEnabled(self.shutdown.canShutdown())
+        self.act_sleepmode.toggled.connect(self.btnShutdownToggled)
+        self.act_sleepmode.setCheckable(True)
+        self.act_sleepmode.setEnabled(self.sleepmode.canSleep())
         self.act_pause_take_snapshot.setVisible(False)
         self.act_resume_take_snapshot.setVisible(False)
         self.act_stop_take_snapshot.setVisible(False)
@@ -638,6 +645,7 @@ class MainWindow(QMainWindow):
             _('Back In &Time'): (
                 self.act_setup_language,
                 self.act_shutdown,
+                self.act_sleepmode,
                 self.act_quit,
             ),
             _('&Backup'): (
@@ -716,6 +724,7 @@ class MainWindow(QMainWindow):
             self.act_last_logview,
             self.act_settings,
             self.act_shutdown,
+            self.act_sleepmode
         ]
 
         # Add each action to toolbar
@@ -751,6 +760,7 @@ class MainWindow(QMainWindow):
         # separators and stretchers
         toolbar.insertSeparator(self.act_settings)
         toolbar.insertSeparator(self.act_shutdown)
+        toolbar.insertSeparator(self.act_sleepmode)
 
     def _create_and_get_filesview_toolbar(self):
         """Create the filesview toolbar object, connect it to actions and
@@ -792,10 +802,9 @@ class MainWindow(QMainWindow):
 
     def closeEvent(self, event):
         if self.shutdown.askBeforeQuit():
-            msg = _('If you close this window, Back In Time will not be able '
-                    'to shut down your system when the snapshot is finished.')
-            msg = msg + '\n'
-            msg = msg + _('Do you really want to close it?')
+            msg = _('If you close this window Back In Time will not be able '
+                    'to shut down your system when the snapshot has finished.'
+                    '\nDo you really want to close?')
             answer = messagebox.warningYesNo(self, msg)
             if answer != QMessageBox.StandardButton.Yes:
                 return event.ignore()
@@ -1010,6 +1019,7 @@ class MainWindow(QMainWindow):
                     takeSnapshotMessage = (0, _('Done, no backup needed'))
 
             self.shutdown.shutdown()
+            self.sleepmode.sleep()
 
         if takeSnapshotMessage != self.lastTakeSnapshotMessage or force_update:
             self.lastTakeSnapshotMessage = takeSnapshotMessage
@@ -1314,6 +1324,9 @@ class MainWindow(QMainWindow):
 
     def btnShutdownToggled(self, checked):
         self.shutdown.activate_shutdown = checked
+        
+    def btnSleepModeToggled(self, checked):
+        self.sleepmode.activate_sleep = checked
 
     def contextMenuClicked(self, point):
         self.contextMenu.exec(self.filesView.mapToGlobal(point))
@@ -1481,14 +1494,11 @@ class MainWindow(QMainWindow):
         else:
             msg = _('Are you sure you want to remove all newer files in your '
                     'original folder?')
-
         if warnRoot:
-            msg = f'<p>{msg}</p><p>'
-            msg = msg + _(
-                '{BOLD}Warning{BOLDEND}: Deleting files in the filesystem '
-                'root could break your entire system.').format(
-                    BOLD='<strong>', BOLDEND='</strong>')
-            msg = msg + '</p>'
+            msg = '{}\n\n{}'.format(
+                msg,
+                _('WARNING: Deleting files in filesystem root could break '
+                  'your whole system!'))
 
         answer = messagebox.warningYesNo(self, msg)
 
