@@ -836,7 +836,7 @@ class MainWindow(QMainWindow):
         self.config.setIntValue('qt.main_window.second_splitter_left_w', sizes[0])
         self.config.setIntValue('qt.main_window.second_splitter_right_w', sizes[1])
 
-        self.config.setIntValue('qt.main_window.files_view.name_width',           self.filesView.header().sectionSize(0))
+        self.config.setIntValue('qt.main_window.files_view.name_width', self.filesView.header().sectionSize(0))
         self.config.setIntValue('qt.main_window.files_view.size_width', self.filesView.header().sectionSize(1))
         self.config.setIntValue('qt.main_window.files_view.date_width', self.filesView.header().sectionSize(2))
 
@@ -1498,7 +1498,7 @@ class MainWindow(QMainWindow):
         else:
             msg = _('Are you sure you want to remove all newer files in your '
                     'original folder?')
-        
+
         if warnRoot:
             msg = f'<p>{msg}</p><p>'
             msg = msg + _(
