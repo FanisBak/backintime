@@ -376,10 +376,10 @@ class MainWindow(QMainWindow):
             self.config.setCurrentHashId(hash_id)
 
         if not config.canBackup(profile_id):
-             msg = _("Can't find snapshots folder.") + '\n' \
-                 + _('If it is on a removable drive please plug it in and then '
-                     'press OK.')
-             messagebox.critical(self, msg)
+            msg = _("Can't find snapshots folder.") + '\n' \
+                + _('If it is on a removable drive please plug it in and then '
+                    'press OK.')
+            messagebox.critical(self, msg)
 
         self.filesViewProxyModel.layoutChanged.connect(self.dirListerCompleted)
 
@@ -804,39 +804,39 @@ class MainWindow(QMainWindow):
         return toolbar
 
     def closeEvent(self, event):
-         if self.shutdown.askBeforeQuit():
-             msg = _('If you close this window, Back In Time will not be able '
-                     'to shut down your system when the snapshot is finished.')
-             msg = msg + '\n'
-             msg = msg + _('Do you really want to close it?')
-             answer = messagebox.warningYesNo(self, msg)
-             if answer != QMessageBox.StandardButton.Yes:
-             	return event.ignore()
+        if self.shutdown.askBeforeQuit():
+            msg = _('If you close this window, Back In Time will not be able '
+                    'to shut down your system when the snapshot is finished.')
+            msg = msg + '\n'
+            msg = msg + _('Do you really want to close it?')
+            answer = messagebox.warningYesNo(self, msg)
+            if answer != QMessageBox.StandardButton.Yes:
+            	return event.ignore()
 
-         self.config.setStrValue('qt.last_path', self.path)
-         self.config.setProfileStrValue('qt.last_path', self.path)
+        self.config.setStrValue('qt.last_path', self.path)
+        self.config.setProfileStrValue('qt.last_path', self.path)
 
-         self.config.setProfileIntValue(
+        self.config.setProfileIntValue(
             'qt.places.SortColumn',
             self.places.header().sortIndicatorSection())
-         self.config.setProfileIntValue(
+        self.config.setProfileIntValue(
             'qt.places.SortOrder',
             self.places.header().sortIndicatorOrder())
 
-         self.config.setIntValue('qt.main_window.x', self.x())
-         self.config.setIntValue('qt.main_window.y', self.y())
-         self.config.setIntValue('qt.main_window.width', self.width())
-         self.config.setIntValue('qt.main_window.height', self.height())
+        self.config.setIntValue('qt.main_window.x', self.x())
+        self.config.setIntValue('qt.main_window.y', self.y())
+        self.config.setIntValue('qt.main_window.width', self.width())
+        self.config.setIntValue('qt.main_window.height', self.height())
 
-         sizes = self.mainSplitter.sizes()
-         self.config.setIntValue('qt.main_window.main_splitter_left_w', sizes[0])
-         self.config.setIntValue('qt.main_window.main_splitter_right_w', sizes[1])
+        sizes = self.mainSplitter.sizes()
+        self.config.setIntValue('qt.main_window.main_splitter_left_w', sizes[0])
+        self.config.setIntValue('qt.main_window.main_splitter_right_w', sizes[1])
 
-         sizes = self.secondSplitter.sizes()
-         self.config.setIntValue('qt.main_window.second_splitter_left_w', sizes[0])
-         self.config.setIntValue('qt.main_window.second_splitter_right_w', sizes[1])
+        sizes = self.secondSplitter.sizes()
+        self.config.setIntValue('qt.main_window.second_splitter_left_w', sizes[0])
+        self.config.setIntValue('qt.main_window.second_splitter_right_w', sizes[1])
 
-         self.config.setIntValue('qt.main_window.files_view.name_width',           self.filesView.header().sectionSize(0))
+        self.config.setIntValue('qt.main_window.files_view.name_width',           self.filesView.header().sectionSize(0))
         self.config.setIntValue('qt.main_window.files_view.size_width', self.filesView.header().sectionSize(1))
         self.config.setIntValue('qt.main_window.files_view.date_width', self.filesView.header().sectionSize(2))
 
@@ -1499,13 +1499,13 @@ class MainWindow(QMainWindow):
             msg = _('Are you sure you want to remove all newer files in your '
                     'original folder?')
         
-         if warnRoot:
-             msg = f'<p>{msg}</p><p>'
-             msg = msg + _(
-                 '{BOLD}Warning{BOLDEND}: Deleting files in the filesystem '
-                 'root could break your entire system.').format(
-                     BOLD='<strong>', BOLDEND='</strong>')
-             msg = msg + '</p>'
+        if warnRoot:
+            msg = f'<p>{msg}</p><p>'
+            msg = msg + _(
+                '{BOLD}Warning{BOLDEND}: Deleting files in the filesystem '
+                'root could break your entire system.').format(
+                    BOLD='<strong>', BOLDEND='</strong>')
+            msg = msg + '</p>'
 
         answer = messagebox.warningYesNo(self, msg)
 
