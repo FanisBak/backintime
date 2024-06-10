@@ -126,7 +126,7 @@ class SleepMode(object):
             if processExists('backintime'):
                 pids = pidsWithName('backintime')
                 proc = subprocess.Popen(['kill', '-SIGSTOP', pids[0] ])
-            proc.communicate()
+                proc.communicate()
                 return proc.returncode
                 	
         if self.proxy is None:
