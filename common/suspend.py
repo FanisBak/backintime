@@ -124,11 +124,11 @@ class SleepMode(object):
             syncfs()
             self.started = True
             if processExists('backintime'):
-            	pids = pidsWithName('backintime')
-            	proc = subprocess.Popen(['kill', '-SIGSTOP', pids[0] ])
-            	proc.communicate()
-            	return proc.returncode
-            	
+                pids = pidsWithName('backintime')
+                proc = subprocess.Popen(['kill', '-SIGSTOP', pids[0] ])
+                proc.communicate()
+                return proc.returncode
+                	
         if self.proxy is None:
             return(False)
         else:
